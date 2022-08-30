@@ -4,15 +4,16 @@
 
 int main()
 {
-  const int windowWidth = 384;
-  const int windowHeight = 384;
-  InitWindow(windowWidth, windowHeight, "Colonize the Crustacean");
+  const int WINDOW_WIDTH = 384;
+  const int WINDOW_HEIGHT = 384;
+  InitWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "Colonize the Crustacean");
 
-  Texture2D map = LoadTexture("nature_tileset/OpenWorldMap24x24.png");
+  Texture2D MAP = LoadTexture("nature_tileset/OpenWorldMap24x24.png");
   Vector2 mapPos{0.f, 0.f};
+  const float MAP_SCALE = 4.f;
 
   Character knight;
-  knight.setScreenPos(windowWidth, windowHeight);
+  knight.setScreenPos(WINDOW_WIDTH, WINDOW_HEIGHT);
 
   SetTargetFPS(60);
   while (!WindowShouldClose())
@@ -22,10 +23,17 @@ int main()
 
     mapPos = Vector2Scale(knight.getWorldPos(), -1.f);
 
-    // draw map
-    DrawTextureEx(map, mapPos, 0.f, 4.f, WHITE);
+    DrawTextureEx(MAP, mapPos, 0.f, MAP_SCALE, WHITE);
 
     knight.tick(GetFrameTime());
+    // check map bounds
+    if (knight.getWorldPos().x < 0 ||
+        knight.getWorldPos().y < 0 ||
+        knight.getWorldPos().x + WINDOW_WIDTH > MAP.width * MAP_SCALE ||
+        knight.getWorldPos().y + WINDOW_HEIGHT > MAP.height * MAP_SCALE)
+    {
+      knight.undoMovement();
+    }
 
     EndDrawing();
   }
