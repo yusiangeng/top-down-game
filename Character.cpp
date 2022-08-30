@@ -1,17 +1,14 @@
 #include "Character.h"
 #include "raymath.h"
 
-Character::Character()
+Character::Character(int windowWidth, int windowHeight)
 {
   width = texture.width / maxFrames;
   height = texture.height;
-}
 
-void Character::setScreenPos(int windowWidth, int windowHeight)
-{
   screenPos = {
-      (float)windowWidth / 2.f - 4.f * (0.5f * width),
-      (float)windowHeight / 2.f - 4.f * (0.5f * height)};
+      static_cast<float>(windowWidth) / 2.f - scale * (0.5f * width),
+      static_cast<float>(windowHeight) / 2.f - scale * (0.5f * height)};
 }
 
 void Character::tick(float deltaTime)
@@ -32,11 +29,11 @@ void Character::tick(float deltaTime)
     Vector2 directionScaled = Vector2Scale(Vector2Normalize(direction), speed);
     worldPos = Vector2Add(worldPos, directionScaled);
     rightLeft = direction.x < 0.f ? -1.f : 1.f;
-    texture = TEXTURE_RUN;
+    texture = texture_run;
   }
   else
   {
-    texture = TEXTURE_IDLE;
+    texture = texture_idle;
   }
 
   // update animation frame
@@ -58,8 +55,8 @@ void Character::tick(float deltaTime)
   Rectangle dest = {
       screenPos.x,
       screenPos.y,
-      4.f * width,
-      4.f * height};
+      scale * width,
+      scale * height};
   Vector2 origin{};
   DrawTexturePro(texture, source, dest, origin, 0.f, WHITE);
 }
@@ -67,4 +64,13 @@ void Character::tick(float deltaTime)
 void Character::undoMovement()
 {
   worldPos = worldPosLastFrame;
+}
+
+Rectangle Character::getCollisionRec()
+{
+  return Rectangle{
+      screenPos.x,
+      screenPos.y,
+      width * scale,
+      height * scale};
 }
