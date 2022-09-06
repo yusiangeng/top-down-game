@@ -10,6 +10,9 @@ public:
   void undoMovement();
   Rectangle getCollisionRec();
   virtual void tick(float deltaTime);
+  virtual Vector2 getScreenPos() = 0;
+  bool getAlive() { return alive; }
+  void setAlive(bool alive) { this->alive = alive; }
 
 protected:
   Texture2D texture{LoadTexture("characters/knight_idle_spritesheet.png")};
@@ -18,7 +21,7 @@ protected:
   Vector2 screenPos{};
   Vector2 worldPos{};
   Vector2 worldPosLastFrame{};
-  float rightLeft = 1.f; // 1: right, 2: left
+  float rightLeft = 1.f; // 1: right, -1: left
   // animation vars
   float runningTime{};
   int frameCount{};
@@ -28,8 +31,10 @@ protected:
   float width{};
   float height{};
   float scale = 4.f;
+  Vector2 velocity{};
 
 private:
+  bool alive = true;
 };
 
 #endif
