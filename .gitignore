@@ -1,3 +1,6 @@
 *.exe
 *.dsym
 main
+BaseCharacter
+Character
+Enemy
